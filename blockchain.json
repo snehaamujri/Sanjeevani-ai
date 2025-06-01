@@ -1,0 +1,11 @@
+[
+    {
+      "batchID": "CIPLA-XYZ123",
+      "medicineName": "Paracetamol 500mg",
+      "manufacturer": "CIPLA Ltd.",
+      "expiry": "2026-08-01",
+      "valid": true,
+      "tempRange": "15-25°C"
+    }
+  ]
+  
