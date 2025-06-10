@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Health Worker Dashboard | Sanjeevani.AI</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+    <style>
+      body {
+        background: #f4f8fb;
+      }
+
+      .dashboard-container {
+        max-width: 900px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+        padding: 32px 40px;
+      }
+
+      .section-title {
+        color: #2b6777;
+        margin-bottom: 18px;
+        font-weight: 700;
+      }
+
+      .alert-expiry {
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeeba;
+      }
+
+      .inventory-table th,
+      .inventory-table td {
+        vertical-align: middle;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-light bg-white justify-content-end mb-3">
+      <div class="dropdown me-4">
+        <button
+          class="btn btn-outline-secondary dropdown-toggle"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <span class="bi bi-person-circle"></span> Profile
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li>
+            <span class="dropdown-item-text"
+              ><strong>Name:</strong> Sneha Amujuri</span
+            >
+          </li>
+          <li>
+            <span class="dropdown-item-text"><strong>ID:</strong> HW-001</span>
+          </li>
+          <li>
+            <span class="dropdown-item-text"
+              ><strong>PHC:</strong> Primary Health Center 2</span
+            >
+          </li>
+          <li><hr class="dropdown-divider" /></li>
+          <li><a class="dropdown-item text-danger" href="#">Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="dashboard-container">
+      <h2 class="mb-4 text-center" style="color: #52ab98">
+        Sanjeevani.AI Health Worker Dashboard
+      </h2>
+
+      <!-- Summary Cards -->
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <div class="card text-center border-success">
+            <div class="card-body">
+              <h5 class="card-title text-success">Medicines</h5>
+              <p class="card-text fs-3">{{ inventory_count }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-center border-warning">
+            <div class="card-body">
+              <h5 class="card-title text-warning">Pending Tasks</h5>
+              <p class="card-text fs-3">{{ tasks_pending }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-center border-danger">
+            <div class="card-body">
+              <h5 class="card-title text-danger">Alerts</h5>
+              <p class="card-text fs-3">{{ alerts_count }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h4 class="section-title">Inventory</h4>
+      <table class="table table-bordered inventory-table mb-4">
+        <thead class="table-light">
+          <tr>
+            <th>Medicine</th>
+            <th>Batch</th>
+            <th>Stock</th>
+            <th>Expiry</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in inventory %}
+          <tr>
+            <td>{{ item.medicine }}</td>
+            <td>{{ item.batch }}</td>
+            <td>{{ item.stock }}</td>
+            <td>{{ item.expiry }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <form
+        action="{% url 'download_inventory' %}"
+        method="get"
+        class="mb-3 text-end"
+      >
+        <button type="submit" class="btn btn-outline-primary">
+          Download Inventory CSV
+        </button>
+      </form>
+
+      <h4 class="section-title">Tasks</h4>
+      <ul class="list-group mb-4">
+        {% for task in tasks %}
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+        >
+          {{ task.task }}
+          <form method="post" style="display: inline">
+            {% csrf_token %}
+            <input
+              type="hidden"
+              name="task_idx"
+              value="{{ forloop.counter0 }}"
+            />
+            <button
+              class="btn btn-sm {% if task.status == 'pending' %}btn-success{% else %}btn-secondary{% endif %}"
+              type="submit"
+              name="toggle_task"
+            >
+                 {% if task.status == 'pending' %}Mark Done{% else %}Undo{% endif %}
+            </button>
+          </form>
+          <span class="badge bg-warning text-dark"
+            >{{ task.status|title }}</span
+          >
+        </li>
+        {% endfor %}
+      </ul>
+
+      <h4 class="section-title">Alerts</h4>
+      {% for alert in alerts %}
+      <div class="alert alert-expiry mb-2" role="alert">{{ alert.msg }}</div>
+      {% empty %}
+      <div class="text-muted">No alerts at this time.</div>
+      {% endfor %}
+
+      <!-- Incident Reporting Section -->
+      <h4 class="section-title">Report Incident</h4>
+      <form method="post" class="mb-4">
+        {% csrf_token %}
+        <div class="input-group">
+          <input
+            type="text"
+            name="incident"
+            class="form-control"
+            placeholder="Describe the issue..."
+            required
+          />
+          <button class="btn btn-danger" type="submit">Report</button>
+        </div>
+      </form>
+
+      {% if incidents %}
+      <h5 class="mt-3">Reported Incidents</h5>
+      <ul class="list-group mb-4">
+        {% for inc in incidents %}
+        <li class="list-group-item">{{ inc }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <!-- Medicine Stock Chart -->
+      <div class="mb-4">
+        <h4 class="section-title">Medicine Stock Overview</h4>
+        <canvas id="stockChart" height="100"></canvas>
+      </div>
+
+      <!-- Buy Medicine Section -->
+      <h4 class="section-title">Buy Medicine & Get SMS</h4>
+      <form
+        method="post"
+        action="{% url 'healthworker_dashboard' %}"
+        class="mb-4"
+      >
+        {% csrf_token %}
+        <div class="row g-2">
+          <div class="col">
+            <input
+              name="buyer_name"
+              class="form-control"
+              placeholder="Name"
+              required
+            />
+          </div>
+          <div class="col">
+            <input
+              name="buyer_phone"
+              class="form-control"
+              placeholder="Phone"
+              required
+            />
+          </div>
+          <div class="col">
+            <select name="buyer_batch" class="form-select" required>
+              <option value="">Select Batch</option>
+              {% for item in inventory %}
+              <option value="{{ item.batch }}">
+                {{ item.medicine }} ({{ item.batch }})
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-primary" type="submit" name="buy_medicine">
+              Buy & SMS
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Mocked AI Verification -->
+      <div class="alert alert-info mt-4">
+        <strong>AI Verification:</strong> Medicine batch verified by AI
+        (mocked).
+      </div>
+
+      <!-- Mocked QR/Barcode Scan -->
+      <div class="alert alert-secondary d-flex align-items-center">
+        <img
+          src="https://barcode.tec-it.com/barcode.ashx?data=8901234567890&code=EAN13"
+          alt="Barcode"
+          style="height: 40px; margin-right: 16px"
+        />
+        <span
+          ><strong>QR/Barcode Scan:</strong> Scanned batch: CIPLA-XYZ123
+          (mocked).</span
+        >
+      </div>
+
+      <!-- Mocked Supply Chain Tracking -->
+      <div class="alert alert-success">
+        <strong>Supply Chain:</strong> Current Location: In Transit (mocked).
+      </div>
+
+      <!-- Mocked Storage Conditions -->
+      <div class="alert alert-warning">
+        <strong>Storage Conditions:</strong> Temp: 25°C, Humidity: 60% (mocked).
+      </div>
+
+      <!-- Mocked Chain-of-Custody -->
+      <div class="alert alert-dark">
+        <strong>Chain-of-Custody Log:</strong> Batch moved from Supplier → PHC-1
+        → PHC-2 (mocked).
+      </div>
+
+      <!-- Mocked Route Optimization -->
+      <div class="alert alert-primary">
+        <strong>Optimized Route:</strong> PHC-1 → PHC-2 → PHC-3 (mocked).
+      </div>
+
+      <!-- API Integration Info -->
+      <div class="alert alert-light border">
+        <strong>API Integration:</strong>
+        <code>POST /api/verify-batch</code> (mocked endpoint)
+      </div>
+
+      <!-- Mocked Security Info -->
+      <div class="alert alert-secondary">
+        <strong>Security:</strong> All data encrypted and audit logs maintained
+        (mocked).
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      const ctx = document.getElementById("stockChart").getContext("2d");
+      const stockChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: JSON.parse("{{ medicine_names|safe|escapejs }}"),
+          datasets: [
+            {
+              label: "Stock",
+              data: JSON.parse("{{ medicine_stock|safe|escapejs }}"),
+              backgroundColor: "#52ab98",
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: { beginAtZero: true },
+          },
+        },
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
