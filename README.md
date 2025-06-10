@@ -41,5 +41,24 @@ Sanjeevani.AI is a healthtech backend built for the AI Agents Hackathon 2025. It
 
 ---
 
+# 1. Clone the repository
+git clone https://github.com/snehaamujri/Sanjeevani-ai.git
+cd Sanjeevani-ai
+
+# 2. Create and activate a virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# 3. Install dependencies
+bash'''
+ 
+   pip install -r requirements.txt
+
+# 4. Apply migrations
+python manage.py migrate
+
+# 5. Run the development server
+python manage.py runserver 0.0.0.0:8000
+Then open http://localhost:8000/ in your browser.
 
 
