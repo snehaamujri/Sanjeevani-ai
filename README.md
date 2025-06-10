@@ -1,64 +1,89 @@
+# Sanjeevani.AI – AI Agents for Autonomous Medicine Verification & Supply Distribution
 
-# Sanjeevani.AI 💊🤖
-
-**AI-powered medicine verification & distribution system using Django**
-
-Sanjeevani.AI is a healthtech backend built for the AI Agents Hackathon 2025. It allows health workers to scan medicine batch IDs, verify their authenticity (simulated with blockchain data), and notify patients via SMS/WhatsApp.
-
-## 🔧 Features
-
-- ✅ Batch verification using simulated NFT (blockchain.json)
-- 📦 Django-based backend
-- 📲 Twilio SMS integration for patient notification
-- 🔐 Secure, scalable design for real-world rural healthcare
-
-## 📂 Project Structure
--sanjeevani-ai/
-├── blockchain.json # Simulated NFT data
-├── sanjeevani_core/ # Django project core
-├── verification/ # App handling verification and reporting
-├── sms_utils.py # Twilio messaging logic
-├── manage.py
-
-
-## 🚀 Endpoints
-
-- `GET /verify/<batch_id>/` → Check if medicine batch is authentic
-- `POST /send-report/` → Send SMS to patient after verification
-
-## 🛠 Built With
-
-- Python 3
-- Django
-- Twilio API (for SMS)
-- JSON (mock blockchain)
+Sanjeevani.AI is an intelligent health supply chain dashboard for health workers and administrators. It enables secure, transparent, and efficient medicine verification and distribution using AI and digital tools.
 
 ---
 
-### 👩‍💻 Contributors
-- Sneha Amujuri [@snehaamujri](https://github.com/snehaamujri)
-- Team Sanjeevani.AI 🚑💚
+## 🚀 Features
+
+- **Medicine Inventory Management:** Track and manage medicine stock, batches, and expiry.
+- **Task Management:** Assign and update health worker tasks (Mark Done/Undo).
+- **AI-based Verification (Mocked):** Simulate AI verification of medicine authenticity.
+- **QR/Barcode Scanning (Mocked):** Display scanned batch details for traceability.
+- **Supply Chain Tracking (Mocked):** Show current location/status of medicine batches.
+- **Storage Condition Monitoring (Mocked):** Display temperature and humidity data.
+- **Chain-of-Custody Logging (Mocked):** Show batch movement history.
+- **Route Optimization (Mocked):** Display optimized delivery routes.
+- **Alerts & Notifications:** Highlight expiring medicines and important events.
+- **Incident Reporting:** Allow health workers to report issues.
+- **CSV Export:** Download inventory data for offline use.
+- **Buy & SMS (Mocked):** Simulate medicine purchase and send mock SMS to users.
+- **Profile Management:** Health worker profile and secure logout.
 
 ---
 
-# 1. Clone the repository
+## 🛠️ Tech Stack
+
+- Django, Python, Bootstrap, Chart.js
+- Mocked AI, IoT, and blockchain features for demo purposes
+
+---
+
+## ⚡ Quick Start
+
+### 1. Clone the repository
+
+```sh
 git clone https://github.com/snehaamujri/Sanjeevani-ai.git
 cd Sanjeevani-ai
+```
 
-# 2. Create and activate a virtual environment
+### 2. Create and activate a virtual environment
+
+```sh
 python3 -m venv venv
 source venv/bin/activate
+```
 
-# 3. Install dependencies
-bash'''
- 
-   pip install -r requirements.txt
+### 3. Install dependencies
 
-# 4. Apply migrations
+```sh
+pip install -r requirements.txt
+```
+
+### 4. Apply migrations
+
+```sh
 python manage.py migrate
+```
 
-# 5. Run the development server
+### 5. Run the development server
+
+```sh
 python manage.py runserver 0.0.0.0:8000
-Then open http://localhost:8000/ in your browser.
+```
 
+### 6. Access the app
 
+Open your browser and go to [http://localhost:8000/](http://localhost:8000/)
+
+---
+
+## 📦 Project Structure
+
+- `dashboard/` – Django app with templates and views
+- `requirements.txt` – Python dependencies
+- `manage.py` – Django management script
+
+---
+
+## 📝 Notes
+
+- Most advanced features (AI, QR, supply chain, etc.) are **mocked** for demo/hackathon purposes.
+- For deployment, ensure you have a valid `requirements.txt` and follow platform-specific instructions.
+
+---
+
+## 📄 License
+
+This project is for demo and educational purposes.
